@@ -2,16 +2,22 @@
 #include <QMenuBar>
 #include <QAction>
 #include <QVBoxLayout>
-#include <QMessageBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QSpinBox>
+#include <QComboBox>
+#include <QPushButton>
+#include "../include/gameengine.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), gameBoard(nullptr), settingsDialog(new SettingsDialog(this))
+    : QMainWindow(parent), gameBoard(nullptr)
 {
     setWindowTitle("Крестики-нолики");
     resize(600, 600);
 
     createMenu();
-    showSettingsDialog();
+    createControls();
+    startNewGame();
 }
 
 MainWindow::~MainWindow()
@@ -22,36 +28,66 @@ void MainWindow::createMenu()
 {
     QMenu *gameMenu = menuBar()->addMenu("Игра");
     
-    QAction *newGameAction = new QAction("Новая игра", this);
-    connect(newGameAction, &QAction::triggered, this, &MainWindow::showSettingsDialog);
-    gameMenu->addAction(newGameAction);
-    
     QAction *exitAction = new QAction("Выход", this);
     connect(exitAction, &QAction::triggered, this, &QMainWindow::close);
     gameMenu->addAction(exitAction);
 }
 
-void MainWindow::showSettingsDialog()
+void MainWindow::createControls()
 {
-    if (settingsDialog->exec() == QDialog::Accepted) {
-        int size = settingsDialog->getBoardSize();
-        GameMode mode = settingsDialog->getGameMode();
-        
-        if (gameBoard) {
-            centralWidget()->deleteLater();
-        }
-        
-        gameBoard = new GameBoard(size, mode, this);
-        setCentralWidget(gameBoard);
-    }
+    QWidget *centralWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
+    
+    // Панель управления
+    QHBoxLayout *controlsLayout = new QHBoxLayout();
+    
+    QLabel *sizeLabel = new QLabel("Размер поля:", this);
+    controlsLayout->addWidget(sizeLabel);
+    
+    sizeSpinBox = new QSpinBox(this);
+    sizeSpinBox->setRange(3, 10);
+    sizeSpinBox->setValue(3);
+    controlsLayout->addWidget(sizeSpinBox);
+    
+    QLabel *modeLabel = new QLabel("Режим игры:", this);
+    controlsLayout->addWidget(modeLabel);
+    
+    modeComboBox = new QComboBox(this);
+    modeComboBox->addItem("Игрок против игрока", static_cast<int>(GameMode::PlayerVsPlayer));
+    modeComboBox->addItem("Игрок против компьютера", static_cast<int>(GameMode::PlayerVsComputer));
+    controlsLayout->addWidget(modeComboBox);
+    
+    //newGameButton = new QPushButton("Новая игра", this);
+    //connect(newGameButton, &QPushButton::clicked, this, &MainWindow::startNewGame);
+    //controlsLayout->addWidget(newGameButton);
+    
+    // Соединяем сигналы изменения настроек
+    connect(sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+            this, &MainWindow::updateGameSettings);
+    connect(modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &MainWindow::updateGameSettings);
+    
+    mainLayout->addLayout(controlsLayout);
+    
+    // Игровое поле будет добавлено при создании новой игры
+    setCentralWidget(centralWidget);
 }
 
-void MainWindow::startNewGame(int size, GameMode mode)
+void MainWindow::startNewGame()
 {
     if (gameBoard) {
-        centralWidget()->deleteLater();
+        centralWidget()->layout()->removeWidget(gameBoard);
+        gameBoard->deleteLater();
     }
     
+    int size = sizeSpinBox->value();
+    GameMode mode = static_cast<GameMode>(modeComboBox->currentData().toInt());
+    
     gameBoard = new GameBoard(size, mode, this);
-    setCentralWidget(gameBoard);
+    centralWidget()->layout()->addWidget(gameBoard);
+}
+
+void MainWindow::updateGameSettings()
+{
+    startNewGame();
 }

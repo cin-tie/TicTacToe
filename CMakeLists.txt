@@ -9,10 +9,8 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 qt_standard_project_setup()
 
-qt_add_resources(resources "resources"
-    PREFIX "/"
-    FILES
-        resources/styles.qss
+qt_add_resources(resources
+    "resources/resources.qrc"
 )
 
 set(SOURCES
@@ -20,14 +18,12 @@ set(SOURCES
     src/mainwindow.cpp
     src/gameboard.cpp
     src/gameengine.cpp
-    src/settingsdialog.cpp
 )
 
 set(HEADERS
     include/mainwindow.h
     include/gameboard.h
     include/gameengine.h
-    include/settingsdialog.h
 )
 
 add_executable(TicTacToe ${SOURCES} ${HEADERS})

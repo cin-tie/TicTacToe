@@ -3,7 +3,10 @@
 
 #include <QMainWindow>
 #include "gameboard.h"
-#include "settingsdialog.h"
+
+class QSpinBox;
+class QComboBox;
+class QPushButton;
 
 class MainWindow : public QMainWindow
 {
@@ -14,13 +17,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void showSettingsDialog();
-    void startNewGame(int size, GameMode mode);
+    void startNewGame();
+    void updateGameSettings();
 
 private:
     void createMenu();
+    void createControls();
+    
     GameBoard *gameBoard;
-    SettingsDialog *settingsDialog;
+    QSpinBox *sizeSpinBox;
+    QComboBox *modeComboBox;
+    //QPushButton *newGameButton;
 };
 
 #endif

@@ -36,7 +36,7 @@ void GameBoard::createBoard()
         for (int col = 0; col < boardSize; ++col) {
             QPushButton *button = new QPushButton(this);
             button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            button->setStyleSheet("font-size: 24px;");
+            button->setStyleSheet("font-size: 24px; min-width: 50px; min-height: 50px");
             gridLayout->addWidget(button, row, col);
             buttons[row][col] = button;
             connect(button, &QPushButton::clicked, this, &GameBoard::handleButtonClick);
