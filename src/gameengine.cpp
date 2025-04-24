@@ -7,6 +7,7 @@ data_size(size), data_gameMode(gameMode), data_currentPlayer(Player::O), data_ga
 }
 
 void GameEngine::reset(){
+    data_board.clear();
     data_board.resize(data_size, std::vector<Player>(data_size, Player::None));
     data_currentPlayer = (data_currentPlayer == Player::X) ? Player::O : Player::X;
     data_gameState = GameState::Ongoing;
@@ -27,11 +28,11 @@ void GameEngine::makeMove(int row, int col){
         data_gameState = (data_currentPlayer == Player::X) ? GameState::XWon : GameState::OWon;
     }
     else{
-        bool draw = false;
+        bool draw = true;
         for(auto row : data_board){
             for(auto cell : row){
-                if(cell != Player::None){
-                    draw = true;
+                if(cell == Player::None){
+                    draw = false;
                     break;
                 }
             }

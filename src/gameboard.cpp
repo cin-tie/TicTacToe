@@ -16,12 +16,12 @@ GameBoard::GameBoard(int size, GameMode mode, QWidget *parent)
     gridLayout = new QGridLayout();
     gridLayout->setSpacing(5);
     mainLayout->addLayout(gridLayout);
+    createBoard();
     
     resetButton = new QPushButton("Новая игра", this);
     connect(resetButton, &QPushButton::clicked, this, &GameBoard::resetBoard);
     mainLayout->addWidget(resetButton);
     
-    createBoard();
     
     if (gameMode == GameMode::PlayerVsComputer && gameEngine->currentPlayer() == Player::O) {
         QTimer::singleShot(500, this, &GameBoard::handleComputerMove);
@@ -61,13 +61,13 @@ void GameBoard::handleButtonClick()
 
 void GameBoard::makeMove(int row, int col)
 {
-    gameEngine->makeMove(row, col);
     buttons[row][col]->setText(gameEngine->currentPlayer() == Player::X ? "X" : "O");
     buttons[row][col]->setEnabled(false);
+    gameEngine->makeMove(row, col);
     
     checkGameEnd();
     
-    if (gameMode == GameMode::PlayerVsComputer && !gameEngine->isGameOver()) {
+    if (gameMode == GameMode::PlayerVsComputer && !gameEngine->isGameOver() && gameEngine->currentPlayer() == Player::O) {
         QTimer::singleShot(500, this, &GameBoard::handleComputerMove);
     }
 }

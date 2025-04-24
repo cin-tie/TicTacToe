@@ -20,9 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     startNewGame();
 }
 
-MainWindow::~MainWindow()
-{
-}
+MainWindow::~MainWindow(){}
 
 void MainWindow::createMenu()
 {
@@ -38,7 +36,6 @@ void MainWindow::createControls()
     QWidget *centralWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout(centralWidget);
     
-    // Панель управления
     QHBoxLayout *controlsLayout = new QHBoxLayout();
     
     QLabel *sizeLabel = new QLabel("Размер поля:", this);
@@ -57,11 +54,6 @@ void MainWindow::createControls()
     modeComboBox->addItem("Игрок против компьютера", static_cast<int>(GameMode::PlayerVsComputer));
     controlsLayout->addWidget(modeComboBox);
     
-    //newGameButton = new QPushButton("Новая игра", this);
-    //connect(newGameButton, &QPushButton::clicked, this, &MainWindow::startNewGame);
-    //controlsLayout->addWidget(newGameButton);
-    
-    // Соединяем сигналы изменения настроек
     connect(sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &MainWindow::updateGameSettings);
     connect(modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -69,7 +61,6 @@ void MainWindow::createControls()
     
     mainLayout->addLayout(controlsLayout);
     
-    // Игровое поле будет добавлено при создании новой игры
     setCentralWidget(centralWidget);
 }
 
