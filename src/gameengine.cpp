@@ -2,14 +2,15 @@
 #include <iostream>
 
 GameEngine::GameEngine(int size, GameMode gameMode) : 
-data_size(size), data_gameMode(gameMode), data_currentPlayer(Player::O), data_gameState(GameState::Ongoing){
+data_size(size), data_gameMode(gameMode), data_currentPlayer(Player::O), data_gameState(GameState::Ongoing), data_startPlayer(Player::O){
     reset();
 }
 
 void GameEngine::reset(){
     data_board.clear();
     data_board.resize(data_size, std::vector<Player>(data_size, Player::None));
-    data_currentPlayer = (data_currentPlayer == Player::X) ? Player::O : Player::X;
+    data_startPlayer = (data_startPlayer == Player::X) ? Player::O : Player::X;
+    data_currentPlayer = data_startPlayer;
     data_gameState = GameState::Ongoing;
 }
 
@@ -36,7 +37,7 @@ void GameEngine::makeMove(int row, int col){
                     break;
                 }
             }
-            if(draw)
+            if(!draw)
                 break;
         }
         if(draw){

@@ -1,35 +1,57 @@
+/* resources/styles.qss */
 QMainWindow {
     background-color: #f0f0f0;
 }
 
+GameBoard {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+QPushButton {
+    font-size: 24px;
+    min-width: 50px;
+    min-height: 50px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0;
+}
+
+QPushButton:disabled {
+    color: black;
+    background-color: white;
+}
+
 QLabel {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     qproperty-alignment: AlignCenter;
 }
 
-QPushButton {
-    background-color: #ffffff;
-    border: 2px solid #cccccc;
-    border-radius: 5px;
-    min-width: 80px;
-    min-height: 80px;
-    font-size: 24px;
-}
-
-QPushButton:hover {
-    background-color: #e6e6e6;
-}
-
-QPushButton:pressed {
-    background-color: #d9d9d9;
-}
-
-QDialog {
-    background-color: #f0f0f0;
-}
-
-QSpinBox, QComboBox {
+QMenuBar {
+    background-color: #e0e0e0;
     padding: 5px;
-    font-size: 14px;
+}
+
+QMenuBar::item {
+    padding: 5px 10px;
+    background: transparent;
+}
+
+QMenuBar::item:selected {
+    background: #a0a0a0;
+}
+
+QMenu {
+    background-color: white;
+    border: 1px solid #ccc;
+}
+
+QMenu::item:selected {
+    background-color: #e0e0e0;
 }

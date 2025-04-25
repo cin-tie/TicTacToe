@@ -4,10 +4,6 @@
 #include <QMainWindow>
 #include "gameboard.h"
 
-class QSpinBox;
-class QComboBox;
-class QPushButton;
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -18,16 +14,15 @@ public:
 
 private slots:
     void startNewGame();
-    void updateGameSettings();
-
+    void startNewGameWithSettings(int size, GameMode mode);
+    void settingsOpen();
+    
 private:
     void createMenu();
-    void createControls();
     
     GameBoard *gameBoard;
-    QSpinBox *sizeSpinBox;
-    QComboBox *modeComboBox;
-    //QPushButton *newGameButton;
+    int currentSize = 3;
+    GameMode currentMode = GameMode::PlayerVsPlayer;
 };
 
 #endif

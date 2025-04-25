@@ -13,6 +13,7 @@ class GameEngine{
         GameMode data_gameMode;
         Player data_currentPlayer;
         GameState data_gameState;
+        Player data_startPlayer;
         std::vector<std::vector<Player>> data_board;
 
         bool checkWin(Player) const;

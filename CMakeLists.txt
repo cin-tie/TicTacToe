@@ -18,11 +18,13 @@ set(SOURCES
     src/mainwindow.cpp
     src/gameboard.cpp
     src/gameengine.cpp
+    src/settings.cpp
 )
 
 set(HEADERS
     include/mainwindow.h
     include/gameboard.h
+    include/settings.h
     include/gameengine.h
 )
 
