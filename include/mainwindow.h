@@ -16,9 +16,12 @@ private slots:
     void startNewGame();
     void startNewGameWithSettings(int size, GameMode mode);
     void settingsOpen();
+    void saveGame();
+    void loadGame();
     
 private:
     void createMenu();
+    QString getSaveFileName(bool isSave);
     
     GameBoard *gameBoard;
     int currentSize = 3;

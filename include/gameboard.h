@@ -15,6 +15,12 @@ class GameBoard : public QWidget
 public:
     GameBoard(int size, GameMode mode, QWidget *parent = nullptr);
     void resetBoard();
+    void replayGame(const std::vector<std::pair<int, int>>& moves);
+    void saveGame(const QString& filename);
+    bool loadGame(const QString& filename);
+
+signals:
+    void moveMade(int row, int col, Player player);
 
 private slots:
     void handleButtonClick();

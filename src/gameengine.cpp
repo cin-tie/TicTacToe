@@ -1,5 +1,7 @@
 #include "../include/gameengine.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 GameEngine::GameEngine(int size, GameMode gameMode) : 
 data_size(size), data_gameMode(gameMode), data_currentPlayer(Player::O), data_gameState(GameState::Ongoing), data_startPlayer(Player::O){
@@ -22,7 +24,7 @@ void GameEngine::makeMove(int row, int col){
     if(data_gameState != GameState::Ongoing || ! isCellEmpty(row, col)){
         return;
     }
-
+    moveHistory.emplace_back(row, col);
     data_board[row][col] = data_currentPlayer;
 
     if(checkWin(data_currentPlayer)){
@@ -105,4 +107,44 @@ bool GameEngine::isGameOver() const
 int GameEngine::boardSize() const
 {
     return data_size;
+}
+
+void GameEngine::saveGame(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file) return;
+
+    file << data_size << "\n";
+    file << static_cast<int>(data_gameMode) << "\n";
+    file << static_cast<int>(data_startPlayer) << "\n";
+    
+    for (const auto& move : moveHistory) {
+        file << move.first << " " << move.second << "\n";
+    }
+}
+
+bool GameEngine::loadGame(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return false;
+    }
+
+    int size, mode, startPlayer;
+    if (!(file >> size >> mode >> startPlayer)) {
+        std::cerr << "Invalid file format" << std::endl;
+        return false;
+    }
+    reset();
+    data_size = size;
+    data_gameMode = static_cast<GameMode>(mode);
+    data_startPlayer = static_cast<Player>(startPlayer);
+    data_currentPlayer = data_startPlayer;
+    
+    moveHistory.clear();
+    int row, col;
+    while (file >> row >> col) {
+        moveHistory.emplace_back(row, col);
+    }
+    
+    return true;
 }

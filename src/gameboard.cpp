@@ -130,3 +130,26 @@ void GameBoard::resetBoard()
         QTimer::singleShot(500, this, &GameBoard::handleComputerMove);
     }
 }
+void GameBoard::replayGame(const std::vector<std::pair<int, int>>& moves) {
+    resetBoard();
+    gameEngine->clearMoveHistory();
+    
+    for (size_t i = 0; i < moves.size(); ++i) {
+        const auto& [row, col] = moves[i];
+        QTimer::singleShot(500 * (i + 1), this, [this, row, col]() {
+            makeMove(row, col);
+        });
+    }
+}
+
+void GameBoard::saveGame(const QString& filename) {
+    gameEngine->saveGame(filename.toStdString());
+}
+
+bool GameBoard::loadGame(const QString& filename) {
+    if (gameEngine->loadGame(filename.toStdString())) {
+        replayGame(gameEngine->getMoveHistory());
+        return true;
+    }
+    return false;
+}
