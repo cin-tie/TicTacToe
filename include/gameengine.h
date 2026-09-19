@@ -41,6 +41,7 @@ class GameEngine{
         void saveGame(const std::string& filename) const;
         bool loadGame(const std::string& filename);
         const std::vector<std::pair<int, int>>& getMoveHistory() const { return moveHistory; }
+        std::vector<std::pair<int, int>> getWinningLine(Player player) const;
         void clearMoveHistory() { moveHistory.clear(); }
         Player currentPlayer() const;
         GameState gameState() const;

@@ -98,11 +98,13 @@ void GameBoard::updateStatusLabel()
     statusLabel->setText(status);
 }
 
-void GameBoard::checkGameEnd()
-{
+
+void GameBoard::checkGameEnd() {
     updateStatusLabel();
     
     if (gameEngine->isGameOver()) {
+        highlightWinningLine();
+        
         for (int row = 0; row < boardSize; ++row) {
             for (int col = 0; col < boardSize; ++col) {
                 buttons[row][col]->setEnabled(false);
@@ -121,6 +123,9 @@ void GameBoard::resetBoard()
         for (int col = 0; col < boardSize; ++col) {
             buttons[row][col]->setText("");
             buttons[row][col]->setEnabled(true);
+            buttons[row][col]->setStyleSheet(
+                "font-size: 24px; min-width: 50px; min-height: 50px"
+            );
         }
     }
     
@@ -142,13 +147,37 @@ void GameBoard::replayGame(const std::vector<std::pair<int, int>>& moves) {
     }
 }
 
+void GameBoard::highlightWinningLine() {
+    if (!gameEngine->isGameOver() || gameEngine->gameState() == GameState::Draw) {
+        return;
+    }
+    
+    Player winner = gameEngine->gameState() == GameState::XWon ? Player::X : Player::O;
+    auto winningLine = gameEngine->getWinningLine(winner);
+    
+    for (const auto& [row, col] : winningLine) {
+        buttons[row][col]->setStyleSheet(
+            "font-size: 24px; min-width: 50px; min-height: 50px; "
+            "background-color: #aaffaa; color: #ff0000; font-weight: bold;"
+        );
+    }
+}
+
 void GameBoard::saveGame(const QString& filename) {
-    gameEngine->saveGame(filename.toStdString());
+    try {
+        gameEngine->saveGame(filename.toStdString());
+    } catch (const std::exception& e) {
+        QMessageBox::critical(this, "Ошибка", "Не удалось сохранить игру");
+    }
 }
 
 bool GameBoard::loadGame(const QString& filename) {
     if (gameEngine->loadGame(filename.toStdString())) {
-        replayGame(gameEngine->getMoveHistory());
+        gameEngine->reset();
+        gameEngine->clearMoveHistory();
+        
+        const auto& moves = gameEngine->getMoveHistory();
+        replayGame(moves);
         return true;
     }
     return false;

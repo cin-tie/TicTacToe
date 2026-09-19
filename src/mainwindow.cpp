@@ -3,6 +3,7 @@
 #include <QAction>
 #include <QVBoxLayout>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "../include/settings.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -49,32 +50,6 @@ void MainWindow::createMenu()
     gameMenu->addAction(exitAction);
 }
 
-void MainWindow::saveGame() {
-    QString filename = getSaveFileName(true);
-    if (!filename.isEmpty()) {
-        gameBoard->saveGame(filename);
-    }
-}
-
-void MainWindow::loadGame() {
-    QString filename = getSaveFileName(false);
-    if (!filename.isEmpty()) {
-        gameBoard->loadGame(filename);
-    }
-}
-
-QString MainWindow::getSaveFileName(bool isSave) {
-    QFileDialog dialog(this);
-    dialog.setNameFilter("Файлы сохранения (*.tictac)");
-    dialog.setDefaultSuffix("tictac");
-    
-    if (isSave) {
-        return dialog.getSaveFileName(this, "Сохранить игру", "", "Файлы сохранения (*.tictac)");
-    } else {
-        return dialog.getOpenFileName(this, "Загрузить игру", "", "Файлы сохранения (*.tictac)");
-    }
-}
-
 void MainWindow::settingsOpen()
 {
     Settings dialog(this);
@@ -104,4 +79,41 @@ void MainWindow::startNewGameWithSettings(int size, GameMode mode)
     
     gameBoard = new GameBoard(size, mode, this);
     centralWidget()->layout()->addWidget(gameBoard);
+}
+
+QString MainWindow::getSaveFileName(bool isSave) {
+    QFileDialog dialog(this);
+    dialog.setNameFilter("Файлы сохранения (*.tictac)");
+    dialog.setDefaultSuffix("tictac");
+    dialog.setDirectory(QDir::currentPath());
+
+    if (isSave) {
+        return dialog.getSaveFileName(this, "Сохранить игру", 
+                                    "saved_game.tictac", 
+                                    "Файлы сохранения (*.tictac)");
+    } else {
+        return dialog.getOpenFileName(this, "Загрузить игру", 
+                                    QDir::currentPath(), 
+                                    "Файлы сохранения (*.tictac)");
+    }
+}
+
+void MainWindow::saveGame() {
+    QString fileName = getSaveFileName(true);
+    if (!fileName.isEmpty()) {
+        if (!fileName.endsWith(".tictac", Qt::CaseInsensitive)) {
+            fileName += ".tictac";
+        }
+        qDebug() << fileName;
+        gameBoard->saveGame(fileName);
+    }
+}
+
+void MainWindow::loadGame() {
+    QString fileName = getSaveFileName(false);
+    if (!fileName.isEmpty()) {
+        if (!gameBoard->loadGame(fileName)) {
+            QMessageBox::critical(this, "Ошибка", "Не удалось загрузить игру");
+        }
+    }
 }

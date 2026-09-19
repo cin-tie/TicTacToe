@@ -30,6 +30,7 @@ private:
     void createBoard();
     void updateStatusLabel();
     void checkGameEnd();
+    void highlightWinningLine();
     void makeMove(int row, int col);
     
     int boardSize;
